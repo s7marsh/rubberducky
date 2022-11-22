@@ -32,7 +32,8 @@ You should see in the run log window that the code exited to confirm that the sc
 
 ### Some controls
 ![controls](/img/06_script_controls.png)
-* `polling_time` is in seconds. Changing this to a smaller value will make checking for activity more often which means the duck will move more often.
+* `min_polling_time` and `max_polling_time` are in seconds. These are used in randomizing the polling time. Smaller values will make checking for activity more often which means the duck will move more often.
+* `count_to_ctrl_tab` determines how many idle times/count before pressing the 'Ctrl+Tab' (changes the duck's playground)
 
 ### How to run the script in background?
 On part 6 of **How to use**. When you test the script, the first line shows you the command to execute the python script. Simply copy that line, put it in a notepad and replace `python.exe` with `pythonw.exe`. Then, copy that whole line and open a command prompt (cmd) and paste it there (by right click) and enter. You can close the command prompt and let the duck shake and quack! 🦆

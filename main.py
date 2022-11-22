@@ -48,9 +48,16 @@ is_active = False
 # So program won't exit when mouse is on (0,0) - upper left of screen
 pg.FAILSAFE = False
 # Controls the output messages displayed, higher means more messages
-verbosity = 2
+verbosity = 1
 # Delay before checking the flag
 polling_time = 10
+min_poll_time = 3
+max_poll_time = 17
+# Counters
+count_to_ctrl_tab = ((5*60) /  # 5 minutes
+                     ((min_poll_time+max_poll_time)/2)  # average poll time
+                     )
+idle_count = 0  # initialize idle counter to 0
 
 
 """
@@ -95,16 +102,35 @@ def do_stuff():
     pg.press("shift")
 
 
+def press_control_tab():
+    pg.keyDown('ctrl')
+    pg.press('tab')
+    pg.keyUp('ctrl')
+
+
 def duck_main():
     global is_active
     global polling_time
+    global idle_count
     while True:
-        polling_time = rand_float(5, 20)
+        polling_time = rand_float(min_poll_time, max_poll_time)
         vprint(1, f'Monitoring activity for {polling_time} secs')
         time.sleep(polling_time)
-        # If no activity
-        if not is_active:
+
+        # If you are doing something
+        if is_active:
+            idle_count = 0  # reset counter
+        else:
+            # Duck stufffff
             do_stuff()
+            # Change scene once in a while
+            if idle_count < count_to_ctrl_tab:
+                idle_count += 1
+            else:
+                vprint(1, f'Control+Tab')
+                press_control_tab()
+                idle_count = 0  # reset counter
+
         # Clear is_active
         is_active = False
 
