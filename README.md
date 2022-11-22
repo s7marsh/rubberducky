@@ -30,15 +30,42 @@ To stop the script, press the `stop` button **TWICE**
 You should see in the run log window that the code exited to confirm that the script stopped.
 ![code exit](/img/05c_code_exit.png)
 
+--------------
+
 ### Some controls
 ![controls](/img/06_script_controls.png)
-* `min_polling_time` and `max_polling_time` are in seconds. These are used in randomizing the polling time. Smaller values will make checking for activity more often which means the duck will move more often.
-* `count_to_ctrl_tab` determines how many idle times/count before pressing the 'Ctrl+Tab' (changes the duck's playground)
+
+By default:
+* `verbosity` is 0
+* `min_poll_time` is 2 (seconds)
+* `max_poll_time` is 8 (seconds)
+* "Ctrl-Tab"s are disabled
+
+--------------
 
 ### How to run the script in background?
-On part 6 of **How to use**. When you test the script, the first line shows you the command to execute the python script. Simply copy that line, put it in a notepad and replace `python.exe` with `pythonw.exe`. Then, copy that whole line and open a command prompt (cmd) and paste it there (by right click) and enter. You can close the command prompt and let the duck shake and quack! 🦆
+On part 6 of [How to use](#how-to-use). When you test the script, the first line shows you the command to execute the python script. Simply copy that line, put it in a notepad and replace `python.exe` with `pythonw.exe`. Then, copy that whole line and open a command prompt (cmd) and paste it there (by right click) and enter. You can close the command prompt and let the duck shake and quack! 🦆
 ![run in bg](/img/07_run_in_bg.png)
+You may add some controls by adding options from the [Some controls](#some-controls) section at the end of the command line before hitting enter.
+> Example 1: Enable control tabs 
+
+`"..../pythonw.exe" "..../main.py" -enct` 
+
+or 
+
+`"..../pythonw.exe" "..../main.py" -enable_ctrltab`
+
+
+> Example 2: Change min and max poll times
+
+`"..../pythonw.exe" "..../main.py" -min_poll_time 3 -max_poll_time 17`
+
+
 **To stop the duck from running in background**
+
 Open Task Manager (Ctrl+Shift+Esc). Go to Details Tab and type `pythonw`
 ![stop in bg](/img/07a_stop_in_bg.png)
 Right click on the first `pythonw.exe` then End Task, End Process if prompted.
+
+
+--------------

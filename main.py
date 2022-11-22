@@ -39,6 +39,27 @@ import threading
 import time
 import random
 from datetime import datetime
+import argparse
+
+
+"""
+Argument Parsing
+"""
+parser = argparse.ArgumentParser()
+parser.add_argument('-v', '--verbosity', type=int, default=0,
+                    help='Controls how verbose your run log will be.')
+parser.add_argument('--min_poll_time', type=int, default=2,
+                    help='Minimum polling time during randomization')
+parser.add_argument('--max_poll_time', type=int, default=8,
+                    help='Maximum polling time during randomization')
+parser.add_argument('-enct', '--enable_ctrltab', action='store_true',
+                    help='Enables pressing "Ctrl+Tab" when certain '
+                         'idle count is reached')
+parser.add_argument('--count_to_ctrltab', type=float,
+                    help='When idle counter reaches this number, '
+                         '"Ctrl+Tab" will be pressed')
+args = parser.parse_args()
+
 
 """
 Variables
@@ -48,15 +69,19 @@ is_active = False
 # So program won't exit when mouse is on (0,0) - upper left of screen
 pg.FAILSAFE = False
 # Controls the output messages displayed, higher means more messages
-verbosity = 1
+verbosity = args.verbosity
 # Delay before checking the flag
 polling_time = 10
-min_poll_time = 3
-max_poll_time = 17
+min_poll_time = args.min_poll_time
+max_poll_time = args.max_poll_time
+# Make sure that max is greater or equal to min
+assert max_poll_time >= min_poll_time, \
+    f"max poll time should be greater than min. \n" \
+    f"max={max_poll_time} min={min_poll_time}"
 # Counters
 count_to_ctrl_tab = ((5*60) /  # 5 minutes
                      ((min_poll_time+max_poll_time)/2)  # average poll time
-                     )
+                     ) if not args.count_to_ctrltab else args.count_to_ctrltab
 idle_count = 0  # initialize idle counter to 0
 
 
@@ -123,13 +148,15 @@ def duck_main():
         else:
             # Duck stufffff
             do_stuff()
-            # Change scene once in a while
-            if idle_count < count_to_ctrl_tab:
-                idle_count += 1
-            else:
-                vprint(1, f'Control+Tab')
-                press_control_tab()
-                idle_count = 0  # reset counter
+            if args.enable_ctrltab or args.count_to_ctrltab:
+                vprint(2, f'Entered control-tab branch')
+                # Change scene once in a while
+                if idle_count < count_to_ctrl_tab:
+                    idle_count += 1
+                else:
+                    vprint(1, f'Control+Tab')
+                    press_control_tab()
+                    idle_count = 0  # reset counter
 
         # Clear is_active
         is_active = False
@@ -165,6 +192,13 @@ def on_click(x, y, button, pressed):
 
 
 if __name__ == '__main__':
+    vprint(0, f'{verbosity=}')
+    vprint(0, f'{args.enable_ctrltab=}')
+    vprint(0, f'{args.count_to_ctrltab=}')
+    vprint(0, f'{count_to_ctrl_tab=}')
+    vprint(0, f'{args.min_poll_time=}')
+    vprint(0, f'{args.max_poll_time=}')
+
     kb_listener = keyboard.Listener(on_press=on_press)
     mouse_listener = mouse.Listener(on_move=on_move,
                                     on_click=on_click,
