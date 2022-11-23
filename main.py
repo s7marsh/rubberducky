@@ -66,6 +66,7 @@ Variables
 """
 # some script flags
 is_active = False
+duck_mode = False
 # So program won't exit when mouse is on (0,0) - upper left of screen
 pg.FAILSAFE = False
 # Controls the output messages displayed, higher means more messages
@@ -109,22 +110,28 @@ Duck Things
 
 
 def square_move(length, duration):
-    pg.moveRel(length, 0, duration)
-    pg.moveRel(0, -1*length, duration)
-    pg.moveRel(-1*length, 0, duration)
-    pg.moveRel(0, length, duration)
+    pg.moveRel(length, 0, duration) if not is_active else None
+    pg.moveRel(0, -1*length, duration) if not is_active else None
+    pg.moveRel(-1*length, 0, duration) if not is_active else None
+    pg.moveRel(0, length, duration) if not is_active else None
 
 
 def do_stuff():
+    global duck_mode
+    duck_mode = True
     # Begin by pressing a safe key (QUACK!)
     pg.press("shift")
     # Move that mouse (SHAKE SHAKE SHAKE!)
     repeat = random.randint(3, 7)
     vprint(1, f'Move the mouse {repeat} times')
     for _ in range(repeat):
-        square_move(100, 0.1)
+        if not is_active:
+            square_move(100, 0.1)
+        else:
+            return
     # End by pressing a safe key again (QUACK!)
     pg.press("shift")
+    duck_mode = False
 
 
 def press_control_tab():
@@ -170,7 +177,8 @@ Input Monitors: Set flag to active upon detection of activity
 def on_press(key):
     global is_active
     vprint(2, f'pressed "{key}"')
-    is_active = True
+    if not (key == keyboard.Key.shift and duck_mode):
+        is_active = True
 
 
 def on_move(x, y):
