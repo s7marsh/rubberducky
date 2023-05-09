@@ -67,6 +67,7 @@ Variables
 # some script flags
 is_active = False
 duck_mode = False
+click_active = False
 # So program won't exit when mouse is on (0,0) - upper left of screen
 pg.FAILSAFE = False
 # Controls the output messages displayed, higher means more messages
@@ -150,7 +151,7 @@ def duck_main():
         time.sleep(polling_time)
 
         # If you are doing something
-        if is_active:
+        if is_active or click_active:
             idle_count = 0  # reset counter
         else:
             # Duck stufffff
@@ -195,8 +196,10 @@ def on_scroll(x, y, dx, dy):
 
 def on_click(x, y, button, pressed):
     global is_active
+    global click_active
     vprint(2, f'{"clicked" if pressed else "released"} with {button}')
     is_active = True
+    click_active = pressed
 
 
 if __name__ == '__main__':
